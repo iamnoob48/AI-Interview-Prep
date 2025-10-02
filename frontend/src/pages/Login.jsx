@@ -44,9 +44,11 @@ function Login() {
       }
       if (data.message) {
         setErrors(data.message);
+        return;
       }
       if (data.token) {
         navigate("/");
+        return;
       }
     } catch (error) {
       console.log(error);
