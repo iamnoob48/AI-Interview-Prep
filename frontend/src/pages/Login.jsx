@@ -14,8 +14,10 @@ function Login() {
     password: "",
   });
   const [errors, setErrors] = useState(null);
+  const [user, setUser] = useState([]);
   const prefix = "/api/v1/auth";
   const navigate = useNavigate();
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -47,8 +49,8 @@ function Login() {
         return;
       }
       if (data.token) {
-        navigate("/");
-        return;
+        localStorage.setItem("token", data.token);
+        navigate("/dashboard");
       }
     } catch (error) {
       console.log(error);
