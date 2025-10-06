@@ -1,11 +1,31 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useNavigate } from "react-router";
 import { LuUser } from "react-icons/lu";
+import ProfileDetails from "../DashboardComps/ProfileDetails";
 
 function NavBar() {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
+  const prefix = "/api/v1/auth";
+  const [user, setUser] = useState([]);
+  const getUser = async () => {
+    try {
+      const res = await fetch(prefix + "/user-profile", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        return;
+      }
+      setUser(data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    getUser();
+  }, [token]);
 
   const handleClick = () => {
     localStorage.removeItem("token");
@@ -47,9 +67,7 @@ function NavBar() {
           </div>
         ) : (
           <div>
-            <Button onClick={handleClick}>
-              <LuUser />
-            </Button>
+            <ProfileDetails user={user} />
           </div>
         )}
       </div>

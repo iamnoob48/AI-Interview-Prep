@@ -87,7 +87,7 @@ function Register() {
       }
       if (data.token) {
         localStorage.setItem("token", data.token);
-        navigate("/");
+        navigate("/dashboard");
       }
     } catch (error) {
       console.log(error);

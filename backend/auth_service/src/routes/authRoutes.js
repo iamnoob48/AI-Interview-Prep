@@ -3,6 +3,8 @@ import { registerUser } from '../controllers/authControllers.js';
 import { loginUser } from '../controllers/authControllers.js';
 import {body} from 'express-validator'
 import upload from '../middlewares/uploadMiddleware.js';
+import authMiddleware from '../middlewares/authMiddleware.js';
+import { userInfo } from '../controllers/userController.js';
 
 
 const router = express.Router();
@@ -26,6 +28,9 @@ router.post('/upload-image', upload.single('image'),(req,res)=>{
   const imageURL = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
   res.status(200).json({imageURL});
 })
+
+//For getting user details
+router.get('/user-profile', authMiddleware, userInfo)
 
 
 
