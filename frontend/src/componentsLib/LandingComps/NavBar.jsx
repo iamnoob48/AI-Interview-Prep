@@ -16,6 +16,7 @@ function NavBar() {
       });
       const data = await res.json();
       if (!res.ok) {
+        navigate("/login");
         return;
       }
       setUser(data);

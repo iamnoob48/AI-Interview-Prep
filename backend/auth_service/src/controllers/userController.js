@@ -1,4 +1,5 @@
 import prisma from "../prismaClient.js";
+import { producer } from "../server.js";
 
 export const userInfo = async (req,res) =>{
     const userId = req.userId
@@ -14,6 +15,10 @@ export const userInfo = async (req,res) =>{
                 profilePic : true,
                 role : true
             }
+        })
+        await producer.send({
+            topic : 'Authentication-successful',
+            messages : [{value : JSON.stringify({userId})}]
         })
         res.status(200).json(user);
         
