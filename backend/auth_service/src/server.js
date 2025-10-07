@@ -2,6 +2,7 @@ import express from 'express'
 import path, {dirname} from 'path'
 import { fileURLToPath } from 'url';
 import authRoutes from './routes/authRoutes.js'
+import {Kafka} from 'kafkajs'
 
 
 
@@ -13,6 +14,28 @@ const __dirname = dirname(__filename)
 
 //middleware for json files
 app.use(express.json());
+
+//We will create kafka object with clientid and broker
+const kafka = new Kafka({
+    clientId : "auth-service",
+    brokers : [process.env.KAFKA_BROKER ||'localhost:9094']
+})
+
+//This is a publisher/producer
+export const producer = kafka.producer()
+
+//We will create a connection fn which will connect to the kafka server
+const connectToKafka= async ()=>{
+    try {
+        await producer.connect();
+        console.log("Producer connected to kafka server");
+        
+    } catch (err) {
+        console.log("Error connecting to kafka server", err)
+
+        
+    }
+}
 
 //For auth routes
 app.use('/api/v1/auth',authRoutes)
@@ -30,5 +53,7 @@ app.get('/uploads', (req,res)=>{
 
 
 app.listen(PORT, ()=>{
+    connectToKafka();
+
     console.log(`Server started in port : ${PORT}`)
 })
